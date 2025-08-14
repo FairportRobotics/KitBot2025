@@ -6,11 +6,12 @@ import wpilib
 
 class Robot(magicbot.MagicRobot):
     controller: components.XboxController
+    drivetrain: components.TankDrive
 
     def createObjects(self):
-        wpilib.DataLogManager.start()
-        wpilib.DataLogManager.logNetworkTables(True)
-        wpilib.DataLogManager.logConsoleOutput(True)
+        #wpilib.DataLogManager.start()
+        #wpilib.DataLogManager.logNetworkTables(True)
+        #wpilib.DataLogManager.logConsoleOutput(True)
         # =============================================================
         # CONTROLLER
         # =============================================================
