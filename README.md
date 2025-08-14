@@ -1,3 +1,3 @@
 # 2025 Kit Bot Code
 
-[Source](https://www.firstinspires.org/resource-library/frc/kitbot)
+A Python version of the kit bot
