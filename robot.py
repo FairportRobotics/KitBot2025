@@ -17,13 +17,16 @@ class Robot(magicbot.MagicRobot):
         #wpilib.DataLogManager.start()
         #wpilib.DataLogManager.logNetworkTables(True)
         #wpilib.DataLogManager.logConsoleOutput(True)
+        
         # =============================================================
         # CONTROLLER
         # =============================================================
         self.xbox_controller = wpilib.XboxController(constants.CONTROLLER_PORT)
+        
         # =============================================================
         # DRIVETRAIN
         # =============================================================
+        # create brushed motors for drive
         self.left_leader = rev.SparkMax(constants.LEFT_LEADER_ID, rev.SparkLowLevel.MotorType.kBrushed)
         self.left_follower = rev.SparkMax(constants.LEFT_FOLLOWER_ID, rev.SparkLowLevel.MotorType.kBrushed)
         self.right_leader = rev.SparkMax(constants.RIGHT_LEADER_ID, rev.SparkLowLevel.MotorType.kBrushed)
@@ -67,6 +70,25 @@ class Robot(magicbot.MagicRobot):
         self.spark_max_config.inverted(True)
         self.left_leader.configure(self.spark_max_config, rev._rev.SparkBase.ResetMode.kResetSafeParameters, rev._rev.SparkBase.PersistMode.kPersistParameters)
   
+        # ==============================================================
+        # ROLLER
+        # ==============================================================
+        # Set up the roller motor as a brushed motor
+        self.roller_motor = rev.SparkMax(constants.ROLLER_MOTOR_ID, rev.SparkLowLevel.MotorType.kBrushed)
+
+        # Set can timeout. Because this project only sets parameters once on
+        # construction, the timeout can be long without blocking robot operation. Code
+        # which sets or gets parameters during operation may need a shorter timeout.
+        self.roller_motor.setCANTimeout(constants.CAN_TIMEOUT)
+
+        # Create and apply configuration for roller motor. Voltage compensation helps
+        # the roller behave the same as the battery voltage dips. The current limit helps
+        # prevent breaker trips or burning out the motor in the event the roller stalls.
+        self.roller_config = rev.SparkMaxConfig()
+        self.roller_config.voltageCompensation(constants.ROLLER_MOTOR_VOLTAGE_COMP)
+        self.roller_config.smartCurrentLimit(constants.ROLLER_MOTOR_CURRENT_LIMIT)
+        self.roller_motor.configure(self.roller_config, rev._rev.SparkBase.ResetMode.kResetSafeParameters, rev._rev.SparkBase.PersistMode.kPersistParameters)
+
 
     def teleopPeriodic(self):
         # Get the input from the controller
