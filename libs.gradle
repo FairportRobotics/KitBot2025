@@ -1,0 +1,8 @@
+build{
+    dependsOn ':lib:Posty:lib:build'
+}
+
+dependencies{
+    // Team 578 libraries
+    implementation project(':lib:Posty:lib')
+}
