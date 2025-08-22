@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import org.fairportrobotics.frc.posty.TestableSubsystem;
+import org.fairportrobotics.frc.posty.test.PostTest;
+import static org.fairportrobotics.frc.posty.assertions.Assertions.*;
+
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -11,11 +15,10 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 // Class to drive the robot over CAN
-public class CANDriveSubsystem extends SubsystemBase {
+public class CANDriveSubsystem extends TestableSubsystem {
   private final SparkMax leftLeader;
   private final SparkMax leftFollower;
   private final SparkMax rightLeader;
@@ -24,6 +27,7 @@ public class CANDriveSubsystem extends SubsystemBase {
   private final DifferentialDrive drive;
 
   public CANDriveSubsystem() {
+    super();
     // create brushed motors for drive
     leftLeader = new SparkMax(DriveConstants.LEFT_LEADER_ID, MotorType.kBrushed);
     leftFollower = new SparkMax(DriveConstants.LEFT_FOLLOWER_ID, MotorType.kBrushed);
@@ -75,4 +79,13 @@ public class CANDriveSubsystem extends SubsystemBase {
   public void driveArcade(double xSpeed, double zRotation) {
     drive.arcadeDrive(xSpeed, zRotation);
   }
+
+  @PostTest
+  public void canDevicesConnected(){
+    assertThat(rightLeader.getFirmwareVersion()).isGreaterThan(5);
+    assertThat(rightFollower.getFirmwareVersion()).isGreaterThan(5);
+    assertThat(leftLeader.getFirmwareVersion()).isGreaterThan(5);
+    assertThat(leftFollower.getFirmwareVersion()).isGreaterThan(5);
+  }
+
 }
