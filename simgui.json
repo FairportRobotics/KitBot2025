@@ -15,6 +15,21 @@
           }
         },
         "open": true
+      },
+      "components": {
+        "controller": {
+          "open": true
+        },
+        "drivetrain": {
+          "open": true
+        },
+        "open": true,
+        "roller": {
+          "open": true
+        }
+      },
+      "robot": {
+        "open": true
       }
     }
   },

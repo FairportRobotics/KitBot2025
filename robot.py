@@ -9,32 +9,42 @@ import os
 os.environ["HALSIMXRP_HOST"] = "192.168.42.1"
 os.environ["HALSIMXRP_PORT"] = "3540"
 
+
 class Robot(magicbot.MagicRobot):
     controller: components.XboxController
     drivetrain: components.TankDrive
+    roller: components.Roller
 
     def createObjects(self):
-        #wpilib.DataLogManager.start()
-        #wpilib.DataLogManager.logNetworkTables(True)
-        #wpilib.DataLogManager.logConsoleOutput(True)
-        
+        # wpilib.DataLogManager.start()
+        # wpilib.DataLogManager.logNetworkTables(True)
+        # wpilib.DataLogManager.logConsoleOutput(True)
+
         # =============================================================
         # CONTROLLER
         # =============================================================
         self.xbox_controller = wpilib.XboxController(constants.CONTROLLER_PORT)
-        
+
         # =============================================================
         # DRIVETRAIN
         # =============================================================
         # create brushed motors for drive
-        self.left_leader = rev.SparkMax(constants.LEFT_LEADER_ID, rev.SparkLowLevel.MotorType.kBrushed)
-        self.left_follower = rev.SparkMax(constants.LEFT_FOLLOWER_ID, rev.SparkLowLevel.MotorType.kBrushed)
-        self.right_leader = rev.SparkMax(constants.RIGHT_LEADER_ID, rev.SparkLowLevel.MotorType.kBrushed)
-        self.right_follower = rev.SparkMax(constants.RIGHT_FOLLOWER_ID, rev.SparkLowLevel.MotorType.kBrushed)
-        
+        self.left_leader = rev.SparkMax(
+            constants.LEFT_LEADER_ID, rev.SparkLowLevel.MotorType.kBrushed
+        )
+        self.left_follower = rev.SparkMax(
+            constants.LEFT_FOLLOWER_ID, rev.SparkLowLevel.MotorType.kBrushed
+        )
+        self.right_leader = rev.SparkMax(
+            constants.RIGHT_LEADER_ID, rev.SparkLowLevel.MotorType.kBrushed
+        )
+        self.right_follower = rev.SparkMax(
+            constants.RIGHT_FOLLOWER_ID, rev.SparkLowLevel.MotorType.kBrushed
+        )
+
         # set up differential drive class
         self.drive = wpilib.drive.DifferentialDrive(self.left_leader, self.right_leader)
-        
+
         # Set can timeout. Because this project only sets parameters once on
         # construction, the timeout can be long without blocking robot operation. Code
         # which sets or gets parameters during operation may need a shorter timeout.
@@ -56,25 +66,43 @@ class Robot(magicbot.MagicRobot):
         # follower. Resetting in case a new controller is swapped
         # in and persisting in case of a controller reset due to breaker trip
         self.spark_max_config.follow(self.left_leader)
-        
-        self.left_follower.configure(self.spark_max_config, rev._rev.SparkBase.ResetMode.kResetSafeParameters, rev._rev.SparkBase.PersistMode.kPersistParameters)
+
+        self.left_follower.configure(
+            self.spark_max_config,
+            rev.SparkBase.ResetMode.kResetSafeParameters,
+            rev.SparkBase.PersistMode.kPersistParameters,
+        )
         self.spark_max_config.follow(self.right_leader)
-        self.right_follower.configure(self.spark_max_config, rev._rev.SparkBase.ResetMode.kResetSafeParameters, rev._rev.SparkBase.PersistMode.kPersistParameters)
+        self.right_follower.configure(
+            self.spark_max_config,
+            rev.SparkBase.ResetMode.kResetSafeParameters,
+            rev.SparkBase.PersistMode.kPersistParameters,
+        )
 
         # Remove following, then apply config to right leader
         self.spark_max_config.disableFollowerMode()
-        self.right_leader.configure(self.spark_max_config, rev._rev.SparkBase.ResetMode.kResetSafeParameters, rev._rev.SparkBase.PersistMode.kPersistParameters)
+        self.right_leader.configure(
+            self.spark_max_config,
+            rev.SparkBase.ResetMode.kResetSafeParameters,
+            rev.SparkBase.PersistMode.kPersistParameters,
+        )
 
         # Set config to inverted and then apply to left leader. Set Left side inverted
         #  so that postive values drive both sides forward
         self.spark_max_config.inverted(True)
-        self.left_leader.configure(self.spark_max_config, rev._rev.SparkBase.ResetMode.kResetSafeParameters, rev._rev.SparkBase.PersistMode.kPersistParameters)
-  
+        self.left_leader.configure(
+            self.spark_max_config,
+            rev.SparkBase.ResetMode.kResetSafeParameters,
+            rev.SparkBase.PersistMode.kPersistParameters,
+        )
+
         # ==============================================================
         # ROLLER
         # ==============================================================
         # Set up the roller motor as a brushed motor
-        self.roller_motor = rev.SparkMax(constants.ROLLER_MOTOR_ID, rev.SparkLowLevel.MotorType.kBrushed)
+        self.roller_motor = rev.SparkMax(
+            constants.ROLLER_MOTOR_ID, rev.SparkLowLevel.MotorType.kBrushed
+        )
 
         # Set can timeout. Because this project only sets parameters once on
         # construction, the timeout can be long without blocking robot operation. Code
@@ -87,20 +115,42 @@ class Robot(magicbot.MagicRobot):
         self.roller_config = rev.SparkMaxConfig()
         self.roller_config.voltageCompensation(constants.ROLLER_MOTOR_VOLTAGE_COMP)
         self.roller_config.smartCurrentLimit(constants.ROLLER_MOTOR_CURRENT_LIMIT)
-        self.roller_motor.configure(self.roller_config, rev._rev.SparkBase.ResetMode.kResetSafeParameters, rev._rev.SparkBase.PersistMode.kPersistParameters)
-
+        self.roller_motor.configure(
+            self.roller_config,
+            rev.SparkBase.ResetMode.kResetSafeParameters,
+            rev.SparkBase.PersistMode.kPersistParameters,
+        )
 
     def teleopPeriodic(self):
+        # Switch controller between driver and operator modes when the bumpers are pressed
+        if self.controller.right_bumper_pressed():
+            self.controller.set_mode("operator")
+
+        if self.controller.left_bumper_pressed():
+            self.controller.set_mode("driver")
+
         # Get the input from the controller
         left_x, left_y, right_x, right_y = self.controller.get_joysticks()
 
-        drivetrain_mode = self.drivetrain.get_mode()
-        if drivetrain_mode in ("arcade", "curvature"):
-            left_stick = -left_y
-            right_stick = -right_x
+        # Handle the controller input based on the controller mode
+        if self.controller.get_mode() == "operator":
+            # =============================================================
+            # Controller is in operator mode
+            # =============================================================
+
+            self.roller.run(-left_y, -right_y)
         else:
-            # Using tank drive
-            left_stick = -left_y
-            right_stick = -right_y
-        # Use the controller input to move the robot
-        self.drivetrain.go(left_stick, right_stick)
+            # =============================================================
+            # Controller is in driver mode
+            # =============================================================
+
+            drivetrain_mode = self.drivetrain.get_mode()
+            if drivetrain_mode in ("arcade", "curvature"):
+                left_stick = -left_y
+                right_stick = -right_x
+            else:
+                # Using tank drive
+                left_stick = -left_y
+                right_stick = -right_y
+            # Use the controller input to move the robot
+            self.drivetrain.go(left_stick, right_stick)

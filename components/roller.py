@@ -1,6 +1,7 @@
 from magicbot import feedback
 import rev
 
+
 class Roller:
     roller_motor: rev.SparkMax
 

@@ -1,9 +1,10 @@
 from magicbot import feedback
 import wpilib.drive
 
+
 class TankDrive:
     drive: wpilib.drive.DifferentialDrive
-    
+
     def setup(self):
         self.speed = 0.0
         self.rotation = 0.0
@@ -21,8 +22,9 @@ class TankDrive:
             if self.mode == "arcade":
                 self.drive.arcadeDrive(self.speed, self.rotation, squareInputs=True)
             else:
-                self.drive.curvatureDrive(self.speed, self.rotation, allowTurnInPlace=True)
-            
+                self.drive.curvatureDrive(
+                    self.speed, self.rotation, allowTurnInPlace=True
+                )
 
     def stop(self):
         self.speed = 0.0

@@ -15,6 +15,7 @@ class XboxController:
         """
         self.correct_for_deadband = True
         self.deadband = 0.3
+        self.mode = "driver"  # default mode is driver
 
     def linear_deadband(self, raw_value: float, deadband: float) -> float:
         if abs(raw_value) < deadband:
@@ -38,6 +39,11 @@ class XboxController:
         if self.correct_for_deadband:
             return self.linear_deadband(raw_value, self.deadband)
         return raw_value
+
+    @feedback(key="Mode")
+    def get_mode(self) -> str:
+        """Get the current mode of the controller."""
+        return self.mode
 
     @feedback(key="Right X")
     def get_right_x(self) -> float:
@@ -182,3 +188,11 @@ class XboxController:
         :return: True if the back button is pressed, False otherwise.
         """
         return self.xbox_controller.getBackButton()
+
+    def set_mode(self, mode: str) -> None:
+        """
+        Set the mode of the controller.
+
+        :param mode: The mode to set the controller to.
+        """
+        self.mode = mode
