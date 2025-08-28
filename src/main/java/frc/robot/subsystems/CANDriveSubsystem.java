@@ -5,7 +5,9 @@
 package frc.robot.subsystems;
 
 import org.fairportrobotics.frc.posty.TestableSubsystem;
+import org.fairportrobotics.frc.posty.test.BitTest;
 import org.fairportrobotics.frc.posty.test.PostTest;
+import org.fairportrobotics.frc.posty.util.Utilities;
 import static org.fairportrobotics.frc.posty.assertions.Assertions.*;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -80,12 +82,88 @@ public class CANDriveSubsystem extends TestableSubsystem {
     drive.arcadeDrive(xSpeed, zRotation);
   }
 
+  //
+  //  Test functions
+  //
+
+  private void motor_current_print(String header, double[] data) {
+    System.out.println(String.format("%s:", header));
+    System.out.println(String.format("\t%-20s: %lf", "left leader",     data[0]));
+    System.out.println(String.format("\t%-20s: %lf", "left follower",   data[1]));
+    System.out.println(String.format("\t%-20s: %lf", "ritht leader",    data[2]));
+    System.out.println(String.format("\t%-20s: %lf", "right follower",  data[3]));
+    System.err.println("");
+  }
+
+  private double[] get_motor_currents() {
+    // Get the currents
+    double[] to_ret = {
+      this.leftLeader.getOutputCurrent(),
+      this.leftFollower.getOutputCurrent(),
+      this.rightLeader.getOutputCurrent(),
+      this.rightFollower.getOutputCurrent()
+    };
+
+    // Return the data
+    return to_ret;
+  }
+
   @PostTest
   public void canDevicesConnected(){
     assertThat(rightLeader.getFirmwareVersion()).isGreaterThan(5);
     assertThat(rightFollower.getFirmwareVersion()).isGreaterThan(5);
     assertThat(leftLeader.getFirmwareVersion()).isGreaterThan(5);
     assertThat(leftFollower.getFirmwareVersion()).isGreaterThan(5);
+  }
+
+  @BitTest
+  public void canDevicesRun() {
+    // Stop the motors
+    System.out.println("Stopping the motors for one second");
+    this.drive.stopMotor();
+    Utilities.waitForCondition(() -> false, (float)1);
+
+    double stopped_current[] = this.get_motor_currents();
+    this.motor_current_print("Stopped Current", stopped_current);
+
+    // Do CCW Rotation
+    System.out.println("Driving counterclockwise for 1 second");
+    this.drive.tankDrive(-.5, .5);
+    Utilities.waitForCondition(() -> false, (float)1);
+
+    double[] ccw_current = this.get_motor_currents();
+    this.motor_current_print("Counter Clockwise Current (abs)", ccw_current);
+
+    double[] ccw_diff = new double[4];
+    for(int i = 0; i < 4; ++i){ccw_diff[i] = ccw_current[i] - stopped_current[i];}
+    this.motor_current_print("Counter Clockwise Current (diff)", ccw_diff);
+
+    // Stop
+    System.out.println("Stopping the motors for one second");
+    this.drive.stopMotor();
+    Utilities.waitForCondition(() -> false, (float)1);
+
+    // Do CW Rotation
+    System.out.println("Driving clockwise for 1 second");
+    this.drive.tankDrive(-.5, .5);
+    Utilities.waitForCondition(() -> false, (float)1);
+
+    double[] cw_current = this.get_motor_currents();
+    this.motor_current_print("Clockwise Current (abs)", cw_current);
+
+    double[] cw_diff = new double[4];
+    for(int i = 0; i < 4; ++i){cw_diff[i] = cw_current[i] - stopped_current[i];}
+    this.motor_current_print("Clockwise Current (diff)", cw_diff);
+
+    // Stop
+    System.out.println("Stopping the motors");
+    this.drive.stopMotor();
+
+    // Ensure that current signs on all 4 motors are different between rotation directions
+    for (int i = 0; i < 4; ++i) {
+      assertThat((ccw_diff[i] < 0) != (cw_diff[i] < 0)).isTrue();
+    }
+
   }
 
 }
