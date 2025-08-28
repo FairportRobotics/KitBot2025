@@ -1,5 +1,6 @@
 import components
 import constants
+import field
 import magicbot
 import wpilib
 import wpilib.drive
@@ -14,6 +15,14 @@ class Robot(magicbot.MagicRobot):
     controller: components.XboxController
     drivetrain: components.TankDrive
     roller: components.Roller
+
+    CHANGE_TARGET_REEF_LEVEL_BY = 0
+    CHANGE_TARGET_REEF_SIDE_BY = 0
+    DPAD_UP_OR_DOWN_WAS_PRESSED = False
+    DPAD_LEFT_OR_RIGHT_WAS_PRESSED = False
+    TARGET_REEF_LEVEL = 0
+    TARGET_REEF_SIDE = 0
+    DEFAULT_MAX_SPEED = 0.8
 
     def createObjects(self):
         # wpilib.DataLogManager.start()
@@ -122,6 +131,9 @@ class Robot(magicbot.MagicRobot):
         )
 
     def teleopPeriodic(self):
+        # ============================================================
+        # BUMPER HANDLING
+        # ============================================================
         # Switch controller between driver and operator modes when the bumpers are pressed
         if self.controller.right_bumper_pressed():
             self.controller.set_mode("operator")
@@ -129,21 +141,26 @@ class Robot(magicbot.MagicRobot):
         if self.controller.left_bumper_pressed():
             self.controller.set_mode("driver")
 
+        # =============================================================
+        # BUTTON HANDLING
+        # =============================================================
+        if self.controller.b_button_pressed():
+            self.drivetrain.set_max_speed(1.0)  # Full speed
+        else:
+            self.drivetrain.set_max_speed(self.DEFAULT_MAX_SPEED)  # Default speed
+
+        # =============================================================
+        # JOYSTICK HANDLING
+        # =============================================================
         # Get the input from the controller
         left_x, left_y, right_x, right_y = self.controller.get_joysticks()
 
         # Handle the controller input based on the controller mode
         if self.controller.get_mode() == "operator":
-            # =============================================================
             # Controller is in operator mode
-            # =============================================================
-
             self.roller.run(-left_y, -right_y)
         else:
-            # =============================================================
             # Controller is in driver mode
-            # =============================================================
-
             drivetrain_mode = self.drivetrain.get_mode()
             if drivetrain_mode in ("arcade", "curvature"):
                 left_stick = -left_y
@@ -154,3 +171,53 @@ class Robot(magicbot.MagicRobot):
                 right_stick = -right_y
             # Use the controller input to move the robot
             self.drivetrain.go(left_stick, right_stick)
+
+        # ============================================================
+        # D-PAD HANDLING
+        # ============================================================
+        # The d-pad is used to select the target reef level and side
+        if self.controller.dpad_up_pressed():
+            self.CHANGE_TARGET_REEF_LEVEL_BY = 1
+            self.DPAD_UP_OR_DOWN_WAS_PRESSED = True
+
+        if self.controller.dpad_down_pressed():
+            self.CHANGE_TARGET_REEF_LEVEL_BY = -1
+            self.DPAD_UP_OR_DOWN_WAS_PRESSED = True
+
+        if (
+            not (
+                self.controller.dpad_up_pressed() or self.controller.dpad_down_pressed()
+            )
+            and self.DPAD_UP_OR_DOWN_WAS_PRESSED
+        ):
+            new_target_reef_level = (
+                self.TARGET_REEF_LEVEL + self.CHANGE_TARGET_REEF_LEVEL_BY
+            )
+            if new_target_reef_level >= 0 and new_target_reef_level <= 4:
+                self.TARGET_REEF_LEVEL = new_target_reef_level
+                print(f"Reef level set to {self.TARGET_REEF_LEVEL}")
+            self.DPAD_UP_OR_DOWN_WAS_PRESSED = False
+
+        if self.controller.dpad_right_pressed():
+            self.CHANGE_TARGET_REEF_SIDE_BY = 1
+            self.DPAD_LEFT_OR_RIGHT_WAS_PRESSED = True
+
+        if self.controller.dpad_left_pressed():
+            self.CHANGE_TARGET_REEF_SIDE_BY = -1
+            self.DPAD_LEFT_OR_RIGHT_WAS_PRESSED = True
+
+        if (
+            not (
+                self.controller.dpad_left_pressed()
+                or self.controller.dpad_right_pressed()
+            )
+            and self.DPAD_LEFT_OR_RIGHT_WAS_PRESSED
+        ):
+            new_target_reef_side = (
+                self.TARGET_REEF_SIDE + self.CHANGE_TARGET_REEF_SIDE_BY
+            )
+            if new_target_reef_side >= 0 and new_target_reef_side <= 6:
+                self.TARGET_REEF_SIDE = new_target_reef_side
+                side_str = field.REEF_SIDES[self.TARGET_REEF_SIDE]
+                print(f"Reef side set to {side_str}")
+            self.DPAD_LEFT_OR_RIGHT_WAS_PRESSED = False
