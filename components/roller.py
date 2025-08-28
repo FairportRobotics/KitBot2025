@@ -24,8 +24,6 @@ class Roller:
         Set the speed of the roller motor.
         :param speed: The speed to set the roller motor to, between -1.0 and 1.0.
         """
-        if speed < 0.0 or speed > 1.0:
-            raise ValueError("speed must be between 0.0 and 1.0")
         self.SPEED = speed
 
     @feedback(key="Speed")
