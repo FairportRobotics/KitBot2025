@@ -9,7 +9,7 @@ class TankDrive:
         self.max_speed = 0.0
         self.mode = "arcade"  # Default to arcade drive
         self.rotation = 0.0
-        self.speed = 0.0
+        self.speed = 0.0        
 
     def execute(self):
         pass
@@ -35,7 +35,7 @@ class TankDrive:
     def get_max_speed(self) -> float:
         """Get the maximum speed of the drive."""
         return self.max_speed
-
+    
     @feedback(key="Mode")
     def get_mode(self) -> str:
         """Get the current drive mode."""
@@ -61,7 +61,7 @@ class TankDrive:
             raise ValueError("Max speed must be between 0.0 and 1.0")
         self.max_speed = max_speed
         self.drive.setMaxOutput(self.max_speed)
-
+        
     def set_mode(self, mode: str):
         """
         Set the drive mode.
