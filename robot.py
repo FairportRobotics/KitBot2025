@@ -145,9 +145,9 @@ class Robot(magicbot.MagicRobot):
         # BUTTON HANDLING
         # =============================================================
         if self.controller.b_button_pressed():
-            self.drivetrain.set_max_speed(1.0)  # Full speed
+            self.drivetrain.set_max_output(1.0)  # Full speed
         else:
-            self.drivetrain.set_max_speed(self.DEFAULT_MAX_SPEED)  # Default speed
+            self.drivetrain.set_max_output(self.DEFAULT_MAX_SPEED)  # Default speed
 
         # =============================================================
         # JOYSTICK HANDLING

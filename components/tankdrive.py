@@ -6,10 +6,10 @@ class TankDrive:
     drive: wpilib.drive.DifferentialDrive
 
     def setup(self):
-        self.max_speed = 0.0
+        self.max_output = 0.0
         self.mode = "arcade"  # Default to arcade drive
         self.rotation = 0.0
-        self.speed = 0.0        
+        self.speed = 0.0
 
     def execute(self):
         pass
@@ -18,8 +18,8 @@ class TankDrive:
         if self.mode == "tank":
             self.drive.tankDrive(left_stick, right_stick)
         else:
-            self.speed = left_stick
-            self.rotation = right_stick
+            self.speed = left_stick * self.max_output
+            self.rotation = right_stick * self.max_output
             if self.mode == "arcade":
                 self.drive.arcadeDrive(self.speed, self.rotation, squareInputs=True)
             else:
@@ -31,11 +31,11 @@ class TankDrive:
         self.speed = 0.0
         self.drive.stopMotor()
 
-    @feedback(key="Max Speed")
-    def get_max_speed(self) -> float:
+    @feedback(key="Max Output")
+    def get_max_output(self) -> float:
         """Get the maximum speed of the drive."""
-        return self.max_speed
-    
+        return self.max_output
+
     @feedback(key="Mode")
     def get_mode(self) -> str:
         """Get the current drive mode."""
@@ -51,17 +51,17 @@ class TankDrive:
         """Get the rotation passed into the drive."""
         return self.rotation
 
-    def set_max_speed(self, max_speed: float) -> None:
+    def set_max_output(self, max_output: float) -> None:
         """
-        Set the maximum speed of the drive.
+        Set the maximum output of the drive.
 
-        :param max_speed: The maximum speed to set, between 0.0 and 1.0.
+        :param max_output: The maximum output to set, between 0.0 and 1.0.
         """
-        if max_speed < 0.0 or max_speed > 1.0:
-            raise ValueError("Max speed must be between 0.0 and 1.0")
-        self.max_speed = max_speed
-        self.drive.setMaxOutput(self.max_speed)
-        
+        if max_output < 0.0 or max_output > 1.0:
+            raise ValueError("Max output must be between 0.0 and 1.0")
+        self.max_output = max_output
+        #self.drive.setMaxOutput(self.max_output)
+
     def set_mode(self, mode: str):
         """
         Set the drive mode.
