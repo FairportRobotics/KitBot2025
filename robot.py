@@ -13,7 +13,7 @@ os.environ["HALSIMXRP_PORT"] = "3540"
 
 class Robot(magicbot.MagicRobot):
     controller: components.XboxController
-    drivetrain: components.TankDrive
+    drivetrain: components.DifferentialDrive
     roller: components.Roller
 
     CHANGE_TARGET_REEF_LEVEL_BY = 0
@@ -161,8 +161,8 @@ class Robot(magicbot.MagicRobot):
             self.roller.run(-left_y, -right_y)
         else:
             # Controller is in driver mode
-            drivetrain_mode = self.drivetrain.get_mode()
-            if drivetrain_mode in ("arcade", "curvature"):
+            drivetrain_type = self.drivetrain.get_drive_type()
+            if drivetrain_type in ("arcade", "curvature"):
                 left_stick = -left_y
                 right_stick = -right_x
             else:

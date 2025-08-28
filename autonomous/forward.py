@@ -6,7 +6,7 @@ class Forward(magicbot.AutonomousStateMachine):
     MODE_NAME = "Roll Forward"
     DEFAULT = True
 
-    drivetrain: components.TankDrive
+    drivetrain: components.DifferentialDrive
 
     @magicbot.state(first=True)
     def start(self):
