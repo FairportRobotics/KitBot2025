@@ -18,11 +18,13 @@ class Robot(magicbot.MagicRobot):
 
     CHANGE_TARGET_REEF_LEVEL_BY = 0
     CHANGE_TARGET_REEF_SIDE_BY = 0
+    DEFAULT_MAX_SPEED = 0.8
     DPAD_UP_OR_DOWN_WAS_PRESSED = False
     DPAD_LEFT_OR_RIGHT_WAS_PRESSED = False
     TARGET_REEF_LEVEL = 0
     TARGET_REEF_SIDE = 0
-    DEFAULT_MAX_SPEED = 0.8
+    X_BUTTON_WAS_PRESSED = False
+    
 
     def createObjects(self):
         # wpilib.DataLogManager.start()
@@ -51,7 +53,7 @@ class Robot(magicbot.MagicRobot):
             constants.RIGHT_FOLLOWER_ID, rev.SparkLowLevel.MotorType.kBrushed
         )
 
-        # set up differential drive class
+        # Set up differential drive class
         self.drive = wpilib.drive.DifferentialDrive(self.left_leader, self.right_leader)
 
         # Set can timeout. Because this project only sets parameters once on
@@ -216,8 +218,19 @@ class Robot(magicbot.MagicRobot):
             new_target_reef_side = (
                 self.TARGET_REEF_SIDE + self.CHANGE_TARGET_REEF_SIDE_BY
             )
-            if new_target_reef_side >= 0 and new_target_reef_side <= 6:
+            if new_target_reef_side >= 0 and new_target_reef_side <= 12:
                 self.TARGET_REEF_SIDE = new_target_reef_side
-                side_str = field.REEF_SIDES[self.TARGET_REEF_SIDE]
-                print(f"Reef side set to {side_str}")
+                print(f"Reef side set to {field.REEF_SIDES[self.TARGET_REEF_SIDE]}")
             self.DPAD_LEFT_OR_RIGHT_WAS_PRESSED = False
+
+        # ============================================================
+        # X BUTTON HANDLING
+        # ============================================================
+        # The x button is used to execute an autonomous routine based on
+        # the selected target reef level and side
+        if self.controller.x_button_pressed():
+            self.X_BUTTON_WAS_PRESSED = True
+
+        if not self.controller.x_button_pressed() and self.X_BUTTON_WAS_PRESSED:
+            print(f"Starting autonomous to level {self.TARGET_REEF_LEVEL}, side {field.REEF_SIDES[self.TARGET_REEF_SIDE]}")
+            self.X_BUTTON_WAS_PRESSED = False

@@ -1,1 +1,1 @@
-REEF_SIDES = ["A", "B", "C", "D", "E", "F", "G"]
+REEF_SIDES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
