@@ -1,11 +1,10 @@
 import components
 import commands
 import constants
-import field
 import geniebot
+import reefscape
 import subsystems
 import wpilib
-import wpilib.drive
 import rev
 import os
 
@@ -150,7 +149,7 @@ class MyRobot(geniebot.GenieRobot):
             )
             if new_target_reef_side >= 0 and new_target_reef_side <= 12:
                 self.TARGET_REEF_SIDE = new_target_reef_side
-                print(f"Reef side set to {field.REEF_SIDES[self.TARGET_REEF_SIDE]}")
+                print(f"Reef side set to {reefscape.REEF_SIDES[self.TARGET_REEF_SIDE]}")
             self.DPAD_LEFT_OR_RIGHT_WAS_PRESSED = False
 
         # ============================================================
@@ -163,6 +162,6 @@ class MyRobot(geniebot.GenieRobot):
 
         if not self.controller.x_button_pressed() and self.X_BUTTON_WAS_PRESSED:
             print(
-                f"Starting autonomous to level {self.TARGET_REEF_LEVEL}, side {field.REEF_SIDES[self.TARGET_REEF_SIDE]}"
+                f"Starting autonomous to level {self.TARGET_REEF_LEVEL}, side {reefscape.REEF_SIDES[self.TARGET_REEF_SIDE]}"
             )
             self.X_BUTTON_WAS_PRESSED = False
