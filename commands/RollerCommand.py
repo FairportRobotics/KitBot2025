@@ -25,7 +25,7 @@ class RollerCommand(commands2.Command):
         pass
 
     def execute(self) -> None:
-        self.rollerSubsystem.runRoller(self.forward(), self.reverse())
+        self.rollerSubsystem.runRoller(self.forward, self.reverse)
 
     def end(self, interrupted: bool) -> None:
         pass

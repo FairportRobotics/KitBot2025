@@ -4,10 +4,13 @@
 
 import commands2
 import constants
+from magicbot import feedback
 import rev
 
 
 class CANRollerSubsystem(commands2.Subsystem):
+    SPEED = 0.0
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -36,4 +39,25 @@ class CANRollerSubsystem(commands2.Subsystem):
 
     # function to run the roller with joystick inputs
     def runRoller(self, forward: float, reverse: float) -> None:
-        self.rollerMotor.set(forward - reverse)
+        # self.rollerMotor.set(forward - reverse)
+        # =====================================================================
+        # ALL LINES BELOW THIS COMMENT WERE ADDED FOR THE GENIE BOT
+        # =====================================================================
+
+        self.set_speed(forward - reverse)
+        self.rollerMotor.set(self.SPEED)
+
+    def execute(self):
+        pass
+
+    def set_speed(self, speed: float) -> None:
+        """
+        Set the speed of the roller motor.
+        :param speed: The speed to set the roller motor to, between -1.0 and 1.0.
+        """
+        self.SPEED = speed
+
+    @feedback(key="Speed")
+    def get_speed(self) -> float:
+        """Get the speed of the drive."""
+        return self.SPEED

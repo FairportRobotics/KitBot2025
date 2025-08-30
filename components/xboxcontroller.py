@@ -7,7 +7,7 @@ class XboxController:
     DEADBAND = 0.3
     MODE = "driver"  # default mode is driver
 
-    xbox_controller: wpilib.XboxController
+    controller: wpilib.XboxController
 
     def execute(self) -> None:
         pass
@@ -22,7 +22,7 @@ class XboxController:
     @feedback(key="Left X")
     def get_left_x(self) -> float:
         """Get the X-axis value of the left joystick."""
-        raw_value = self.xbox_controller.getLeftX()
+        raw_value = self.controller.getLeftX()
         if self.CORRECT_FOR_DEADBAND:
             return self.linear_deadband(raw_value, self.DEADBAND)
         return raw_value
@@ -30,7 +30,7 @@ class XboxController:
     @feedback(key="Left Y")
     def get_left_y(self) -> float:
         """Get the Y-axis value of the left joystick."""
-        raw_value = self.xbox_controller.getLeftY()
+        raw_value = self.controller.getLeftY()
         if self.CORRECT_FOR_DEADBAND:
             return self.linear_deadband(raw_value, self.DEADBAND)
         return raw_value
@@ -43,7 +43,7 @@ class XboxController:
     @feedback(key="Right X")
     def get_right_x(self) -> float:
         """Get the X-axis value of the right joystick."""
-        raw_value = self.xbox_controller.getRightX()
+        raw_value = self.controller.getRightX()
         if self.CORRECT_FOR_DEADBAND:
             return self.linear_deadband(raw_value, self.DEADBAND)
         return raw_value
@@ -51,7 +51,7 @@ class XboxController:
     @feedback(key="Right Y")
     def get_right_y(self) -> float:
         """Get the Y-axis value of the right joystick."""
-        raw_value = self.xbox_controller.getRightY()
+        raw_value = self.controller.getRightY()
         if self.CORRECT_FOR_DEADBAND:
             return self.linear_deadband(raw_value, self.DEADBAND)
         return raw_value
@@ -79,14 +79,14 @@ class XboxController:
 
         :return: True if the A button is pressed, False otherwise.
         """
-        return self.xbox_controller.getAButton()
+        return self.controller.getAButton()
 
     def b_button_pressed(self) -> bool:
         """
         Check if the B button is pressed.
         :return: True if the B button is pressed, False otherwise.
         """
-        return self.xbox_controller.getBButton()
+        return self.controller.getBButton()
 
     def x_button_pressed(self) -> bool:
         """
@@ -94,7 +94,7 @@ class XboxController:
 
         :return: True if the X button is pressed, False otherwise.
         """
-        return self.xbox_controller.getXButton()
+        return self.controller.getXButton()
 
     def y_button_pressed(self) -> bool:
         """
@@ -102,7 +102,7 @@ class XboxController:
 
         :return: True if the Y button is pressed, False otherwise.
         """
-        return self.xbox_controller.getYButton()
+        return self.controller.getYButton()
 
     def dpad_up_pressed(self) -> bool:
         """
@@ -110,7 +110,7 @@ class XboxController:
 
         :return: True if the D-pad is pressed up, False otherwise.
         """
-        return self.xbox_controller.getPOV() == 0
+        return self.controller.getPOV() == 0
 
     def dpad_down_pressed(self) -> bool:
         """
@@ -118,7 +118,7 @@ class XboxController:
 
         :return: True if the D-pad is pressed down, False otherwise.
         """
-        return self.xbox_controller.getPOV() == 180
+        return self.controller.getPOV() == 180
 
     def dpad_left_pressed(self) -> bool:
         """
@@ -126,7 +126,7 @@ class XboxController:
 
         :return: True if the D-pad is pressed left, False otherwise.
         """
-        return self.xbox_controller.getPOV() == 270
+        return self.controller.getPOV() == 270
 
     def dpad_right_pressed(self) -> bool:
         """
@@ -134,7 +134,7 @@ class XboxController:
 
         :return: True if the D-pad is pressed right, False otherwise.
         """
-        return self.xbox_controller.getPOV() == 90
+        return self.controller.getPOV() == 90
 
     def left_bumper_pressed(self) -> bool:
         """
@@ -142,7 +142,7 @@ class XboxController:
 
         :return: True if the left bumper is pressed, False otherwise.
         """
-        return self.xbox_controller.getLeftBumper()
+        return self.controller.getLeftBumper()
 
     def right_bumper_pressed(self) -> bool:
         """
@@ -150,7 +150,7 @@ class XboxController:
 
         :return: True if the right bumper is pressed, False otherwise.
         """
-        return self.xbox_controller.getRightBumper()
+        return self.controller.getRightBumper()
 
     def left_trigger_pressed(self) -> float:
         """
@@ -158,7 +158,7 @@ class XboxController:
 
         :return: The value of the left trigger, ranging from 0.0 to 1.0.
         """
-        return self.xbox_controller.getLeftTriggerAxis()
+        return self.controller.getLeftTriggerAxis()
 
     def right_trigger_pressed(self) -> float:
         """
@@ -166,7 +166,7 @@ class XboxController:
 
         :return: The value of the right trigger, ranging from 0.0 to 1.0.
         """
-        return self.xbox_controller.getRightTriggerAxis()
+        return self.controller.getRightTriggerAxis()
 
     def start_button_pressed(self) -> bool:
         """
@@ -174,7 +174,7 @@ class XboxController:
 
         :return: True if the start button is pressed, False otherwise.
         """
-        return self.xbox_controller.getStartButton()
+        return self.controller.getStartButton()
 
     def back_button_pressed(self) -> bool:
         """
@@ -182,7 +182,7 @@ class XboxController:
 
         :return: True if the back button is pressed, False otherwise.
         """
-        return self.xbox_controller.getBackButton()
+        return self.controller.getBackButton()
 
     def set_mode(self, mode: str) -> None:
         """

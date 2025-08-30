@@ -27,6 +27,9 @@
         "open": true,
         "roller": {
           "open": true
+        },
+        "xbox_controller": {
+          "open": true
         }
       },
       "robot": {
