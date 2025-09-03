@@ -16,6 +16,8 @@ DRIVE_MOTOR_CURRENT_LIMIT = 60
 CAN_TIMEOUT = 250
 VOLTAGE_COMPENSATION = 12
 
+DEFAULT_MAX_OUTPUT = 0.8
+
 # ============================================================
 # ROLLER CONSTANTS
 # ============================================================

@@ -1,3 +1,4 @@
+import constants
 from magicbot import feedback
 import rev
 
@@ -5,10 +6,31 @@ import rev
 class Roller:
     SPEED = 0.0
 
-    roller_motor: rev.SparkMax
-
     def execute(self) -> None:
         pass
+
+    def setup(self) -> None:
+        # Set up the roller motor as a brushed motor
+        self.roller_motor = rev.SparkMax(
+            constants.ROLLER_MOTOR_ID, rev.SparkLowLevel.MotorType.kBrushed
+        )
+
+        # Set can timeout. Because this project only sets parameters once on
+        # construction, the timeout can be long without blocking robot operation. Code
+        # which sets or gets parameters during operation may need a shorter timeout.
+        self.roller_motor.setCANTimeout(constants.CAN_TIMEOUT)
+
+        # Create and apply configuration for roller motor. Voltage compensation helps
+        # the roller behave the same as the battery voltage dips. The current limit helps
+        # prevent breaker trips or burning out the motor in the event the roller stalls.
+        self.roller_config = rev.SparkMaxConfig()
+        self.roller_config.voltageCompensation(constants.ROLLER_MOTOR_VOLTAGE_COMP)
+        self.roller_config.smartCurrentLimit(constants.ROLLER_MOTOR_CURRENT_LIMIT)
+        self.roller_motor.configure(
+            self.roller_config,
+            rev.SparkBase.ResetMode.kResetSafeParameters,
+            rev.SparkBase.PersistMode.kPersistParameters,
+        )
 
     def run(self, forward: float, reverse: float) -> None:
         """
