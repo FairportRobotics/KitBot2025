@@ -12,11 +12,12 @@ class MyRobot(magicbot.MagicRobot):
     controller: components.XboxController
     drivetrain: components.DifferentialDrive
     roller: components.Roller
-
+    """
     CHANGE_TARGET_REEF_LEVEL_BY = 0
     CHANGE_TARGET_REEF_SIDE_BY = 0
     TARGET_REEF_LEVEL = 0
     TARGET_REEF_SIDE = 0
+    """
 
     def createObjects(self):
         self.controller_port = constants.CONTROLLER_PORT
@@ -65,7 +66,7 @@ class MyRobot(magicbot.MagicRobot):
                 right_stick = -right_y
             # Use the controller input to move the robot
             self.drivetrain.go(left_stick, right_stick)
-
+        """
         # ============================================================
         # D-PAD HANDLING
         # ============================================================
@@ -113,3 +114,4 @@ class MyRobot(magicbot.MagicRobot):
             print(
                 f"Starting autonomous to level {self.TARGET_REEF_LEVEL}, side {reefscape.REEF_SIDES[self.TARGET_REEF_SIDE]}"
             )
+        """
