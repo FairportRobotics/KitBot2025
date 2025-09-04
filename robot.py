@@ -3,6 +3,8 @@ import constants
 import reefscape
 import magicbot
 import os
+from wpimath.controller import PIDController
+
 
 os.environ["HALSIMXRP_HOST"] = "192.168.42.1"
 os.environ["HALSIMXRP_PORT"] = "3540"
@@ -11,6 +13,7 @@ os.environ["HALSIMXRP_PORT"] = "3540"
 class MyRobot(magicbot.MagicRobot):
     controller: components.XboxController
     drivetrain: components.DifferentialDrive
+    gyro: components.NavX
     roller: components.Roller
     """
     CHANGE_TARGET_REEF_LEVEL_BY = 0
@@ -18,12 +21,21 @@ class MyRobot(magicbot.MagicRobot):
     TARGET_REEF_LEVEL = 0
     TARGET_REEF_SIDE = 0
     """
+    ROTATE_TO_ANGLE = False
 
     def createObjects(self):
         self.controller_port = constants.CONTROLLER_PORT
+        self.turn_controller = PIDController(
+            constants.TURN_P, constants.TURN_I, constants.TURN_D
+        )
+        self.turn_controller.setTolerance(constants.TURN_TOLERANCE_DEGREES)
+        self.turn_controller.enableContinuousInput(-180.0, 180.0)
         # wpilib.DataLogManager.start()
         # wpilib.DataLogManager.logNetworkTables(True)
         # wpilib.DataLogManager.logConsoleOutput(True)
+
+    def teleopInit(self):
+        self.turn_controller.reset()
 
     def teleopPeriodic(self):
         # ============================================================
@@ -37,39 +49,28 @@ class MyRobot(magicbot.MagicRobot):
             self.controller.set_mode("driver")
 
         # =============================================================
-        # BUTTON HANDLING
+        # B BUTTON HANDLING
         # =============================================================
         if self.controller.b_button_pressed():
             self.drivetrain.set_max_output(1.0)  # Full output
         else:
             self.drivetrain.set_max_output(constants.DEFAULT_MAX_OUTPUT)
 
-        # =============================================================
-        # JOYSTICK HANDLING
-        # =============================================================
-        # Get the input from the controller
-        left_x, left_y, right_x, right_y = self.controller.get_joysticks()
-
-        # Handle the controller input based on the controller mode
-        if self.controller.get_mode() == "operator":
-            # Controller is in operator mode
-            self.roller.run(-left_y, -right_y)
-        else:
-            # Controller is in driver mode
-            drivetrain_type = self.drivetrain.get_drive_type()
-            if drivetrain_type in ("arcade", "curvature"):
-                left_stick = -left_y
-                right_stick = -right_x
-            else:
-                # Using tank drive
-                left_stick = -left_y
-                right_stick = -right_y
-            # Use the controller input to move the robot
-            self.drivetrain.go(left_stick, right_stick)
+        """
+        # ============================================================
+        # X BUTTON HANDLING
+        # ============================================================
+        # The x button is used to execute an autonomous routine based on
+        # the selected target reef level and side
+        if self.controller.x_button_was_pressed():
+            print(
+                f"Starting autonomous to level {self.TARGET_REEF_LEVEL}, side {reefscape.REEF_SIDES[self.TARGET_REEF_SIDE]}"
+            )
         """
         # ============================================================
         # D-PAD HANDLING
         # ============================================================
+        """
         # The d-pad is used to select the target reef level and side
         if self.controller.dpad_up_pressed():
             self.CHANGE_TARGET_REEF_LEVEL_BY = 1
@@ -105,13 +106,47 @@ class MyRobot(magicbot.MagicRobot):
                 self.TARGET_REEF_SIDE = new_target_reef_side
                 print(f"Reef side set to {reefscape.REEF_SIDES[self.TARGET_REEF_SIDE]}")
 
-        # ============================================================
-        # X BUTTON HANDLING
-        # ============================================================
-        # The x button is used to execute an autonomous routine based on
-        # the selected target reef level and side
-        if self.controller.x_button_was_pressed():
-            print(
-                f"Starting autonomous to level {self.TARGET_REEF_LEVEL}, side {reefscape.REEF_SIDES[self.TARGET_REEF_SIDE]}"
-            )
         """
+        if self.controller.dpad_up_pressed():
+            self.turn_controller.setSetpoint(0.0)
+            self.ROTATE_TO_ANGLE = True
+
+        if self.controller.dpad_right_pressed():
+            self.turn_controller.setSetpoint(90.0)
+            self.ROTATE_TO_ANGLE = True
+
+        if self.controller.dpad_down_pressed():
+            self.turn_controller.setSetpoint(180.0)
+            self.ROTATE_TO_ANGLE = True
+
+        if self.controller.dpad_left_pressed():
+            self.turn_controller.setSetpoint(-90.0)
+            self.ROTATE_TO_ANGLE = True
+
+        # =============================================================
+        # JOYSTICK HANDLING
+        # =============================================================
+        # Get the input from the controller
+        left_x, left_y, right_x, right_y = self.controller.get_joysticks()
+
+        # Handle the controller input based on the controller mode
+        if self.controller.get_mode() == "operator":
+            # Controller is in operator mode
+            self.roller.run(-left_y, -right_y)
+        else:
+            # Controller is in driver mode
+            drivetrain_type = self.drivetrain.get_drive_type()
+            if drivetrain_type in ("arcade", "curvature"):
+                left_stick = -left_y
+                right_stick = -right_x
+            else:
+                # Using tank drive
+                left_stick = -left_y
+                right_stick = -right_y
+
+            if self.ROTATE_TO_ANGLE:
+                right_stick = self.turn_controller.calculate(self.gyro.get_yaw())
+            if self.turn_controller.atSetpoint():
+                self.ROTATE_TO_ANGLE = False
+            # Use the controller input to move the robot
+            self.drivetrain.go(left_stick, right_stick)

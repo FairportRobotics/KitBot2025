@@ -25,3 +25,12 @@ ROLLER_MOTOR_ID = 5
 ROLLER_MOTOR_CURRENT_LIMIT = 60
 ROLLER_MOTOR_VOLTAGE_COMP = 10
 ROLLER_EJECT_VALUE = 0.44
+
+# ============================================================
+# PID CONSTANTS
+# ============================================================
+TURN_P = 0.03
+TURN_I = 0.0
+TURN_D = 0.0
+TURN_F = 0.00
+TURN_TOLERANCE_DEGREES = 2.0
