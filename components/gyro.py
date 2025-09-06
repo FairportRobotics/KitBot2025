@@ -39,12 +39,12 @@ class NavX:
         """Get the angle of the robot."""
         return self.ahrs.getAngle()
 
-    @feedback(key="Pitch")
+    @feedback(key="Y")
     def get_pitch(self) -> float:
         """Get the pitch of the robot."""
         return self.ahrs.getPitch()
 
-    @feedback(key="Roll")
+    @feedback(key="X")
     def get_roll(self) -> float:
         """Get the roll of the robot."""
         return self.ahrs.getRoll()
