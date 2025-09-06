@@ -6,7 +6,6 @@ import wpilib.drive
 
 class DifferentialDrive:
     DRIVE_TYPE = "arcade"
-    MAX_OUTPUT = constants.DEFAULT_MAX_OUTPUT
     ROTATION = 0.0
     SPEED = 0.0
 
@@ -86,8 +85,8 @@ class DifferentialDrive:
         if self.DRIVE_TYPE == "tank":
             self.drive.tankDrive(left_stick, right_stick)
         else:
-            self.SPEED = left_stick * self.MAX_OUTPUT
-            self.ROTATION = right_stick * self.MAX_OUTPUT
+            self.SPEED = left_stick
+            self.ROTATION = right_stick
             if self.DRIVE_TYPE == "arcade":
                 self.drive.arcadeDrive(self.SPEED, self.ROTATION, squareInputs=True)
             else:
@@ -97,17 +96,13 @@ class DifferentialDrive:
 
     def stop(self):
         self.SPEED = 0.0
+        self.ROTATION = 0.0
         self.drive.stopMotor()
 
     @feedback(key="Drive Type")
     def get_drive_type(self) -> str:
         """Get the current drive type."""
         return self.DRIVE_TYPE
-
-    @feedback(key="Max Output")
-    def get_max_output(self) -> float:
-        """Get the maximum output of the drive."""
-        return self.MAX_OUTPUT
 
     @feedback(key="Speed")
     def get_speed(self) -> float:
@@ -128,13 +123,3 @@ class DifferentialDrive:
         if drive_type not in ["arcade", "curvature", "tank"]:
             raise ValueError("Invalid drive type. Use 'arcade', 'curvature' or 'tank'.")
         self.DRIVE_TYPE = drive_type
-
-    def set_max_output(self, max_output: float) -> None:
-        """
-        Set the maximum output of the drive.
-
-        :param max_output: The maximum output to set, between 0.0 and 1.0.
-        """
-        if max_output < 0.0 or max_output > 1.0:
-            raise ValueError("Max output must be between 0.0 and 1.0")
-        self.MAX_OUTPUT = max_output
