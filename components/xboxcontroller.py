@@ -4,6 +4,7 @@ from magicbot import feedback
 
 class XboxController:
     port: int
+    mode: str
 
     def execute(self) -> None:
         pass
@@ -15,7 +16,6 @@ class XboxController:
         """
         self.correct_for_deadband = True
         self.deadband = 0.3
-        self.mode = "driver"  # or "operator"
         self.xbox_controller = wpilib.XboxController(self.port)
         self.button_was_pressed = {
             "A": False,

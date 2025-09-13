@@ -1,10 +1,9 @@
 import components
-import commands
 import constants
-import reefscape
 import magicbot
 import os
-
+# import commands
+# import reefscape
 
 os.environ["HALSIMXRP_HOST"] = "192.168.42.1"
 os.environ["HALSIMXRP_PORT"] = "3540"
@@ -13,7 +12,7 @@ os.environ["HALSIMXRP_PORT"] = "3540"
 class MyRobot(magicbot.MagicRobot):
     controller: components.XboxController
     drivetrain: components.DifferentialDrive
-    gyro: components.NavX
+    # gyro: components.NavX
     roller: components.Roller
     """
     CHANGE_TARGET_REEF_LEVEL_BY = 0
@@ -25,10 +24,11 @@ class MyRobot(magicbot.MagicRobot):
 
     def createObjects(self):
         self.controller_port = constants.CONTROLLER_PORT
+        self.controller_mode = "drive"
         # wpilib.DataLogManager.start()
         # wpilib.DataLogManager.logNetworkTables(True)
         # wpilib.DataLogManager.logConsoleOutput(True)
-        self.turn_to = commands.TurnTo()
+        # self.turn_to = commands.TurnTo()
 
     def teleopPeriodic(self):
         # ============================================================
@@ -36,10 +36,10 @@ class MyRobot(magicbot.MagicRobot):
         # ============================================================
         # Switch controller between driver and operator modes when the bumpers are pressed
         if self.controller.right_bumper_pressed():
-            self.controller.set_mode("operator")
+            self.controller.set_mode("roller")
 
         if self.controller.left_bumper_pressed():
-            self.controller.set_mode("driver")
+            self.controller.set_mode("drive")
 
         # =============================================================
         # B BUTTON HANDLING
@@ -49,7 +49,7 @@ class MyRobot(magicbot.MagicRobot):
             self.MAX_OUTPUT = 1  # Full output
         else:
             self.MAX_OUTPUT = constants.DEFAULT_MAX_OUTPUT
-
+        """
         # ============================================================
         # X BUTTON HANDLING
         # ============================================================
@@ -59,7 +59,7 @@ class MyRobot(magicbot.MagicRobot):
             # print(f"Starting autonomous to level {self.TARGET_REEF_LEVEL}, side {reefscape.REEF_SIDES[self.TARGET_REEF_SIDE]}")
             self.turn_to.set_target_angle(0)
             self.turn_to.engage()
-
+        """
         """
         # ============================================================
         # D-PAD HANDLING
@@ -107,7 +107,7 @@ class MyRobot(magicbot.MagicRobot):
         left_x, left_y, right_x, right_y = self.controller.get_joysticks()
 
         # Handle the controller input based on the controller mode
-        if self.controller.get_mode() == "operator":
+        if self.controller.get_mode() == "roller":
             # Controller is in operator mode
             self.roller.run(-left_y, -right_y)
         else:
