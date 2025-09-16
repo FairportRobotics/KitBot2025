@@ -4,14 +4,7 @@ import rev
 import wpilib.drive
 
 
-class DifferentialDrive:
-    DRIVE_TYPE = "arcade"
-    ROTATION = 0.0
-    SPEED = 0.0
-
-    def execute(self):
-        pass
-
+class DriveTrain:
     def setup(self):
         # create brushed motors for drive
         self.left_leader = rev.SparkMax(
@@ -81,45 +74,15 @@ class DifferentialDrive:
             rev.SparkBase.PersistMode.kPersistParameters,
         )
 
-    def go(self, left_stick: float, right_stick: float):
-        if self.DRIVE_TYPE == "tank":
-            self.drive.tankDrive(left_stick, right_stick)
-        else:
-            self.SPEED = left_stick
-            self.ROTATION = right_stick
-            if self.DRIVE_TYPE == "arcade":
-                self.drive.arcadeDrive(self.SPEED, self.ROTATION, squareInputs=True)
-            else:
-                self.drive.curvatureDrive(
-                    self.SPEED, self.ROTATION, allowTurnInPlace=True
-                )
+    def execute(self):
+        pass
 
-    def stop(self):
-        self.SPEED = 0.0
-        self.ROTATION = 0.0
+    # =========================================================================
+    # CONTROL METHODS
+    # =========================================================================
+
+    def go(self, throttle: float, rotation: float, square_inputs: bool = True) -> None:
+        self.drive.arcadeDrive(throttle, rotation, squareInputs=square_inputs)
+
+    def stop(self) -> None:
         self.drive.stopMotor()
-
-    @feedback(key="Drive Type")
-    def get_drive_type(self) -> str:
-        """Get the current drive type."""
-        return self.DRIVE_TYPE
-
-    @feedback(key="Speed")
-    def get_speed(self) -> float:
-        """Get the speed passed into the drive."""
-        return self.SPEED
-
-    @feedback(key="Rotation")
-    def get_rotation(self) -> float:
-        """Get the rotation passed into the drive."""
-        return self.ROTATION
-
-    def set_drive_type(self, drive_type: str):
-        """
-        Set the drive type.
-
-        :param drive_type: The drive type to set, either "arcade", "curvature" or "tank".
-        """
-        if drive_type not in ["arcade", "curvature", "tank"]:
-            raise ValueError("Invalid drive type. Use 'arcade', 'curvature' or 'tank'.")
-        self.DRIVE_TYPE = drive_type
