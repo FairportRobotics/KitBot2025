@@ -1,6 +1,5 @@
-from .differentialdrive import DifferentialDrive
-from .gyro import NavX
+from .controller import XboxController
+from .drivetrain import DriveTrain
 from .roller import Roller
-from .xboxcontroller import XboxController
 
-__all__ = ["DifferentialDrive", "NavX", "Roller", "XboxController"]
+__all__ = ["DriveTrain", "Roller", "XboxController"]
