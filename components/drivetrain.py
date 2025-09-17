@@ -74,12 +74,12 @@ class DriveTrain:
             rev.SparkBase.PersistMode.kPersistParameters,
         )
 
-    def execute(self):
-        pass
-
     # =========================================================================
     # CONTROL METHODS
     # =========================================================================
+
+    def execute(self):
+        pass
 
     def go(self, throttle: float, rotation: float, square_inputs: bool = True) -> None:
         self.drive.arcadeDrive(throttle, rotation, squareInputs=square_inputs)

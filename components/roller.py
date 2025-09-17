@@ -6,9 +6,6 @@ import rev
 class Roller:
     SPEED = 0.0
 
-    def execute(self) -> None:
-        pass
-
     def setup(self) -> None:
         # Set up the roller motor as a brushed motor
         self.roller_motor = rev.SparkMax(
@@ -32,6 +29,13 @@ class Roller:
             rev.SparkBase.PersistMode.kPersistParameters,
         )
 
+    # =========================================================================
+    # CONTROL METHODS
+    # =========================================================================
+
+    def execute(self) -> None:
+        pass
+
     def run(self, forward: float, reverse: float) -> None:
         """
         Run the roller motor with joystick input.
@@ -48,7 +52,11 @@ class Roller:
         """
         self.SPEED = speed
 
+    # =========================================================================
+    # INFORMATIONAL METHODS
+    # =========================================================================
+
     @feedback(key="Speed")
-    def get_speed(self) -> float:
+    def speed(self) -> float:
         """Get the speed of the drive."""
         return self.SPEED

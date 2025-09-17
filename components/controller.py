@@ -50,6 +50,10 @@ class XboxController:
             "Back": False,
         }
 
+    # =========================================================================
+    # CONTROL METHODS
+    # =========================================================================
+
     def _button_pressed(self, button_name: str, pressed: bool) -> bool:
         """
         Generic method to check if a button is pressed.
