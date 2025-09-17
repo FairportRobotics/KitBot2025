@@ -7,6 +7,7 @@ class MyRobot(magicbot.MagicRobot):
     controller: components.XboxController
     drivetrain: components.DriveTrain
     roller: components.Roller
+    #gyro: components.NavX
 
     def createObjects(self):
         self.controller_port = constants.CONTROLLER_PORT
