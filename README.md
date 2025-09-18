@@ -6,11 +6,12 @@ A Python version of the kit bot
 
 * Open a command prompt
 * Clone the repository - `git clone https://github.com/FairportRobotics/KitBot2025`
-* Checkout the magicbot branch - `git checkout magicbot`
 * Change directory - `cd KitBot2025`
+* Checkout the magicbot branch - `git checkout magicbot`
 * Create a virtual environment - `python -m venv .venv`
 * Activate the virtual environment - `.venv\Scripts\activate`
 * Install the requirements `pip install -r requirments.txt`
+* Get additional files - `robotpy sync`
 * Connect to the robot
 * Deploy the code `robotpy deploy`
 
