@@ -10,7 +10,7 @@ A Python version of the kit bot
 * Checkout the magicbot branch - `git checkout magicbot`
 * Create a virtual environment - `python -m venv .venv`
 * Activate the virtual environment - `.venv\Scripts\activate`
-* Install the requirements `pip install -r requirments.txt`
+* Install the requirements `pip install -r requirements.txt`
 * Get additional files - `robotpy sync`
 * Connect to the robot
 * Deploy the code `robotpy deploy`
