@@ -1,6 +1,7 @@
 import constants
 from magicbot import feedback
-import rev
+import wpilib
+# import phoenix5 as ctre
 
 
 class Roller:
@@ -8,10 +9,10 @@ class Roller:
 
     def setup(self) -> None:
         # Set up the roller motor as a brushed motor
-        self.roller_motor = rev.SparkMax(
-            constants.ROLLER_MOTOR_ID, rev.SparkLowLevel.MotorType.kBrushed
-        )
+        # self.roller_motor = ctre.TalonSRX(constants.ROLLER_MOTOR_ID)
+        self.roller_motor = wpilib.PWMTalonSRX(constants.ROLLER_MOTOR_ID)
 
+        """
         # Set can timeout. Because this project only sets parameters once on
         # construction, the timeout can be long without blocking robot operation. Code
         # which sets or gets parameters during operation may need a shorter timeout.
@@ -28,6 +29,7 @@ class Roller:
             rev.SparkBase.ResetMode.kResetSafeParameters,
             rev.SparkBase.PersistMode.kPersistParameters,
         )
+        """
 
     # =========================================================================
     # CONTROL METHODS

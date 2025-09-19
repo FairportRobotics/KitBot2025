@@ -1,28 +1,23 @@
 import constants
 from magicbot import feedback
-import rev
+import wpilib
 import wpilib.drive
 
 
 class DriveTrain:
     def setup(self):
         # create brushed motors for drive
-        self.left_leader = rev.SparkMax(
-            constants.LEFT_LEADER_ID, rev.SparkLowLevel.MotorType.kBrushed
-        )
-        self.left_follower = rev.SparkMax(
-            constants.LEFT_FOLLOWER_ID, rev.SparkLowLevel.MotorType.kBrushed
-        )
-        self.right_leader = rev.SparkMax(
-            constants.RIGHT_LEADER_ID, rev.SparkLowLevel.MotorType.kBrushed
-        )
-        self.right_follower = rev.SparkMax(
-            constants.RIGHT_FOLLOWER_ID, rev.SparkLowLevel.MotorType.kBrushed
-        )
+        self.left_leader = wpilib.PWMVictorSPX(constants.LEFT_LEADER_ID)
+        self.left_follower = wpilib.PWMVictorSPX(constants.LEFT_FOLLOWER_ID)
+        self.right_leader = wpilib.PWMVictorSPX(constants.RIGHT_LEADER_ID)
+        self.right_follower = wpilib.PWMVictorSPX(constants.RIGHT_FOLLOWER_ID)
+
+        self.left_leader.setInverted(True)
 
         # Set up differential drive class
         self.drive = wpilib.drive.DifferentialDrive(self.left_leader, self.right_leader)
 
+        """
         # Set can timeout. Because this project only sets parameters once on
         # construction, the timeout can be long without blocking robot operation. Code
         # which sets or gets parameters during operation may need a shorter timeout.
@@ -73,6 +68,7 @@ class DriveTrain:
             rev.SparkBase.ResetMode.kResetSafeParameters,
             rev.SparkBase.PersistMode.kPersistParameters,
         )
+        """
 
     # =========================================================================
     # CONTROL METHODS
