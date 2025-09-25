@@ -19,10 +19,10 @@ class MyRobot(magicbot.MagicRobot):
         # BUMPER HANDLING
         # ============================================================
         # Switch controller between driver and operator modes when the bumpers are pressed
-        if self.controller.right_bumper_pressed():
+        if self.controller.x_button_was_pressed():
             self.controller.set_mode("roller")
 
-        if self.controller.left_bumper_pressed():
+        if self.controller.y_button_was_pressed():
             self.controller.set_mode("drive")
 
         # =============================================================
@@ -43,7 +43,7 @@ class MyRobot(magicbot.MagicRobot):
         # Handle the controller input based on the controller mode
         if self.controller.get_mode() == "roller":
             # Controller is in operator mode
-            self.roller.run(-left_y, -right_y)
+            self.roller.go(-left_y, -right_y)
         else:
             # Controller is in driver mode
             self.drivetrain.go(-left_y * self.max_output, -right_x * self.max_output)

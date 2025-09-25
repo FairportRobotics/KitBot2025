@@ -7,6 +7,7 @@ class Forward(magicbot.AutonomousStateMachine):
     DEFAULT = True
 
     drivetrain: components.DriveTrain
+    # roller: components.Roller
 
     @magicbot.state(first=True)
     def start(self):
@@ -15,6 +16,12 @@ class Forward(magicbot.AutonomousStateMachine):
     @magicbot.timed_state(duration=1.0, next_state="finish")
     def drive_forward(self):
         self.drivetrain.go(1, 0)
+
+    """
+    @magicbot.timed_state(duration=1.0, next_state="finish")
+    def roll(self):
+        self.roller.run(1, 0)
+    """
 
     @magicbot.state()
     def finish(self):

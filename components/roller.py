@@ -1,35 +1,13 @@
 import constants
 from magicbot import feedback
-import wpilib
-# import phoenix5 as ctre
+import phoenix5 as ctre
 
 
 class Roller:
     SPEED = 0.0
 
     def setup(self) -> None:
-        # Set up the roller motor as a brushed motor
-        # self.roller_motor = ctre.TalonSRX(constants.ROLLER_MOTOR_ID)
-        self.roller_motor = wpilib.PWMTalonSRX(constants.ROLLER_MOTOR_ID)
-
-        """
-        # Set can timeout. Because this project only sets parameters once on
-        # construction, the timeout can be long without blocking robot operation. Code
-        # which sets or gets parameters during operation may need a shorter timeout.
-        self.roller_motor.setCANTimeout(constants.CAN_TIMEOUT)
-
-        # Create and apply configuration for roller motor. Voltage compensation helps
-        # the roller behave the same as the battery voltage dips. The current limit helps
-        # prevent breaker trips or burning out the motor in the event the roller stalls.
-        self.roller_config = rev.SparkMaxConfig()
-        self.roller_config.voltageCompensation(constants.ROLLER_MOTOR_VOLTAGE_COMP)
-        self.roller_config.smartCurrentLimit(constants.ROLLER_MOTOR_CURRENT_LIMIT)
-        self.roller_motor.configure(
-            self.roller_config,
-            rev.SparkBase.ResetMode.kResetSafeParameters,
-            rev.SparkBase.PersistMode.kPersistParameters,
-        )
-        """
+        self.roller_motor = ctre.TalonSRX(constants.ROLLER_MOTOR_ID)
 
     # =========================================================================
     # CONTROL METHODS
@@ -38,14 +16,20 @@ class Roller:
     def execute(self) -> None:
         pass
 
-    def run(self, forward: float, reverse: float) -> None:
+    def go(self, forward: float, reverse: float) -> None:
         """
         Run the roller motor with joystick input.
         :param forward: The speed to run the roller motor at, between -1.0 and 1.0.
         :param reverse: The speed to run the roller motor in reverse, between -1.0 and 1
         """
         self.set_speed(forward - reverse)
-        self.roller_motor.set(self.SPEED)
+        self.roller_motor.set(ctre.ControlMode.PercentOutput, self.SPEED)
+
+    def stop(self) -> None:
+        """
+        Stop the roller motor
+        """
+        self.roller_motor.set(ctre.ControlMode.PercentOutput, 0.0)
 
     def set_speed(self, speed: float) -> None:
         """
