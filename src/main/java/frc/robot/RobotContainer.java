@@ -35,8 +35,8 @@ public class RobotContainer {
       OperatorConstants.DRIVER_CONTROLLER_PORT);
 
   // The operator's controller
-  private final CommandXboxController operatorController = new CommandXboxController(
-      OperatorConstants.OPERATOR_CONTROLLER_PORT);
+  //private final CommandXboxController operatorController = new CommandXboxController(
+  //    OperatorConstants.OPERATOR_CONTROLLER_PORT);
 
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -73,7 +73,7 @@ public class RobotContainer {
     // value ejecting the gamepiece while the button is held
 
     // before
-    operatorController.a()
+    driverController.a()
         .whileTrue(new RollerCommand(() -> RollerConstants.ROLLER_EJECT_VALUE, () -> 0, rollerSubsystem));
 
     // Set the default command for the drive subsystem to an instance of the
@@ -92,8 +92,8 @@ public class RobotContainer {
     // RollerCommand with the values provided by the triggers on the operator
     // controller
     rollerSubsystem.setDefaultCommand(new RollerCommand(
-        () -> operatorController.getRightTriggerAxis(),
-        () -> operatorController.getLeftTriggerAxis(),
+        () -> driverController.getRightTriggerAxis(),
+        () -> driverController.getLeftTriggerAxis(),
         rollerSubsystem));
   }
 

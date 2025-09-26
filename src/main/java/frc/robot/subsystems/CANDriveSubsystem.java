@@ -37,6 +37,8 @@ public class CANDriveSubsystem extends TestableSubsystem {
     leftFollower = new WPI_VictorSPX(DriveConstants.LEFT_FOLLOWER_ID);
     rightLeader = new WPI_VictorSPX(DriveConstants.RIGHT_LEADER_ID);
     rightFollower = new WPI_VictorSPX(DriveConstants.RIGHT_FOLLOWER_ID);
+    leftLeader.setInverted(true);
+    leftFollower.setInverted(true);
 
     // set up differential drive class
     drive = new DifferentialDrive(leftLeader, rightLeader);
