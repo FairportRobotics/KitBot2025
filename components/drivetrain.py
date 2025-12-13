@@ -2,23 +2,21 @@ import constants
 from magicbot import feedback
 import wpilib
 import wpilib.drive
+import phoenix5 as ctre
 
 
 class DriveTrain:
-    THROTTLE = 0
-    ROTATION = 0
+    LEFT_LEADER: ctre.TalonFX
+    LEFT_FOLLOWER: ctre.TalonFX
+    RIGHT_LEADER: ctre.TalonFX
+    RIGHT_FOLLOWER: ctre.TalonFX
+
+    THROTTLE: float = 0.0
+    ROTATION: float = 0.0
 
     def setup(self):
-        # create brushed motors for drive
-        self.left_leader = wpilib.PWMVictorSPX(constants.LEFT_LEADER_ID)
-        self.left_follower = wpilib.PWMVictorSPX(constants.LEFT_FOLLOWER_ID)
-        self.right_leader = wpilib.PWMVictorSPX(constants.RIGHT_LEADER_ID)
-        self.right_follower = wpilib.PWMVictorSPX(constants.RIGHT_FOLLOWER_ID)
-
-        self.left_leader.setInverted(True)
-
         # Set up differential drive class
-        self.drive = wpilib.drive.DifferentialDrive(self.left_leader, self.right_leader)
+        self.drive = wpilib.drive.DifferentialDrive(self.LEFT_LEADER, self.RIGHT_LEADER)
 
     # =========================================================================
     # CONTROL METHODS
@@ -33,16 +31,16 @@ class DriveTrain:
         self.drive.arcadeDrive(self.THROTTLE, self.ROTATION, squareInputs=square_inputs)
 
     def stop(self) -> None:
-        self.set_throttle(0)
-        self.set_rotation(0)
+        self.set_throttle(0.0)
+        self.set_rotation(0.0)
         self.drive.stopMotor()
 
     @feedback(key="Throttle")
-    def throttle(self):
+    def throttle(self) -> float:
         return self.THROTTLE
 
     @feedback(key="Rotation")
-    def rotation(self):
+    def rotation(self) -> float:
         return self.ROTATION
 
     def set_throttle(self, throttle):

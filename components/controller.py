@@ -3,8 +3,7 @@ from magicbot import feedback
 
 
 class XboxController:
-    port: int
-    mode: str
+    PORT: int
 
     def execute(self) -> None:
         pass
@@ -16,7 +15,7 @@ class XboxController:
         """
         self.correct_for_deadband = True
         self.deadband = 0.3
-        self.xbox_controller = wpilib.XboxController(self.port)
+        self.xbox_controller = wpilib.XboxController(self.PORT)
         self.button_was_pressed = {
             "A": False,
             "B": False,
@@ -93,7 +92,7 @@ class XboxController:
             )
         return raw_value
 
-    def capture_buton_presses(self) -> None:
+    def capture_button_presses(self) -> None:
         """
         Capture the current state of all buttons to track presses.
         This method should be called at the end of each control loop iteration.
@@ -356,18 +355,3 @@ class XboxController:
         :return: True if the back button was pressed since the last check, False otherwise.
         """
         return self._button_was_pressed("Back")
-
-    def set_mode(self, mode: str) -> None:
-        """
-        Set the mode of the controller.
-        :param mode: The mode to set the controller to.
-        """
-        self.mode = mode
-
-    @feedback(key="Mode")
-    def get_mode(self) -> str:
-        """
-        Get the current mode of the controller.
-        :return: The current mode of the controller.
-        """
-        return self.mode

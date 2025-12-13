@@ -4,10 +4,8 @@ import phoenix5 as ctre
 
 
 class Roller:
-    SPEED = 0.0
-
-    def setup(self) -> None:
-        self.roller_motor = ctre.TalonSRX(constants.ROLLER_MOTOR_ID)
+    MOTOR: ctre.TalonSRX
+    SPEED: float = 0.0
 
     # =========================================================================
     # CONTROL METHODS
@@ -23,13 +21,13 @@ class Roller:
         :param reverse: The speed to run the roller motor in reverse, between -1.0 and 1
         """
         self.set_speed(forward - reverse)
-        self.roller_motor.set(ctre.ControlMode.PercentOutput, self.SPEED)
+        self.MOTOR.set(ctre.ControlMode.PercentOutput, self.SPEED)
 
     def stop(self) -> None:
         """
         Stop the roller motor
         """
-        self.roller_motor.set(ctre.ControlMode.PercentOutput, 0.0)
+        self.MOTOR.set(ctre.ControlMode.PercentOutput, 0.0)
 
     def set_speed(self, speed: float) -> None:
         """
