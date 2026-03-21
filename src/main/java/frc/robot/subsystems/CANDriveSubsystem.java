@@ -9,16 +9,10 @@ import org.fairportrobotics.frc.posty.test.PostTest;
 import static org.fairportrobotics.frc.posty.assertions.Assertions.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.ctre.phoenix.WPI_CallbackHelper;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import frc.robot.Constants.DriveConstants;
 
 // Class to drive the robot over CAN
