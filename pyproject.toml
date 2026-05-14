@@ -17,7 +17,7 @@ robotpy_extras = [
     # "cscore",
     "navx",
     # "pathplannerlib",
-    "phoenix5",
+    # "phoenix5",
     # "phoenix6",
     # "rev",
     # "romi",
@@ -26,4 +26,4 @@ robotpy_extras = [
 ]
 
 # Other pip packages to install
-requires = []
+requires = ["robotpy-ctre"]
