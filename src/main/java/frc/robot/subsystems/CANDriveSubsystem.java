@@ -8,35 +8,28 @@ import org.fairportrobotics.frc.posty.TestableSubsystem;
 import org.fairportrobotics.frc.posty.test.PostTest;
 import static org.fairportrobotics.frc.posty.assertions.Assertions.*;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.ctre.phoenix.WPI_CallbackHelper;
-
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import frc.robot.Constants.DriveConstants;
 
 // Class to drive the robot over CAN
 public class CANDriveSubsystem extends TestableSubsystem {
-  private final WPI_VictorSPX leftLeader;
-  private final WPI_VictorSPX leftFollower;
-  private final WPI_VictorSPX rightLeader;
-  private final WPI_VictorSPX rightFollower;
+  private final WPI_TalonSRX leftLeader;
+  private final WPI_TalonSRX leftFollower;
+  private final WPI_TalonSRX rightLeader;
+  private final WPI_TalonSRX rightFollower;
 
   private final DifferentialDrive drive;
 
   public CANDriveSubsystem() {
     super();
     // create brushed motors for drive
-    leftLeader = new WPI_VictorSPX(DriveConstants.LEFT_LEADER_ID);
-    leftFollower = new WPI_VictorSPX(DriveConstants.LEFT_FOLLOWER_ID);
-    rightLeader = new WPI_VictorSPX(DriveConstants.RIGHT_LEADER_ID);
-    rightFollower = new WPI_VictorSPX(DriveConstants.RIGHT_FOLLOWER_ID);
+    leftLeader = new WPI_TalonSRX(DriveConstants.LEFT_LEADER_ID);
+    leftFollower = new WPI_TalonSRX(DriveConstants.LEFT_FOLLOWER_ID);
+    rightLeader = new WPI_TalonSRX(DriveConstants.RIGHT_LEADER_ID);
+    rightFollower = new WPI_TalonSRX(DriveConstants.RIGHT_FOLLOWER_ID);
     leftLeader.setInverted(true);
     leftFollower.setInverted(true);
 

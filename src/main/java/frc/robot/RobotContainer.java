@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.commands.AutoCommand;
+import frc.robot.commands.BubbleMakerCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.RollerCommand;
 import frc.robot.subsystems.CANDriveSubsystem;
@@ -85,16 +86,20 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(new DriveCommand(
         () -> -driverController.getLeftY() *
             (driverController.getHID().getRightBumperButton() ? 1 : 0.5),
-        () -> -driverController.getRightX(),
+        () -> -driverController.getRightX() *
+            (driverController.getHID().getRightBumperButton() ? 1 : 0.5),
         driveSubsystem));
 
     // Set the default command for the roller subsystem to an instance of
     // RollerCommand with the values provided by the triggers on the operator
     // controller
-    rollerSubsystem.setDefaultCommand(new RollerCommand(
-        () -> driverController.getRightTriggerAxis(),
-        () -> driverController.getLeftTriggerAxis(),
-        rollerSubsystem));
+    // rollerSubsystem.setDefaultCommand(new RollerCommand(
+    //     () -> driverController.getRightTriggerAxis(),
+    //     () -> driverController.getLeftTriggerAxis(),
+    //     rollerSubsystem));
+    driverController.b().toggleOnTrue(
+      new BubbleMakerCommand(rollerSubsystem)
+    );
   }
 
   /**
